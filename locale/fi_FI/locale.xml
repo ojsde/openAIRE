@@ -2,7 +2,7 @@
 <!DOCTYPE locale SYSTEM "../../../../../lib/pkp/dtd/locale.dtd">
 
 <!--
-  * plugins/generic/openAIRE/locale/en_US/locale.xml
+  * plugins/generic/openAIRE/locale/fi_FI/locale.xml
   *
   * Copyright (c) 2014-2019 Simon Fraser University
   * Copyright (c) 2003-2019 John Willinsky
@@ -11,15 +11,16 @@
   * Localization strings.
   -->
  
-<locale name="en_US" full_name="U.S. English">
+<locale name="fi_FI" full_name="Suomi">
 	<message key="plugins.generic.openAIRE.displayName">OpenAIRE</message>
 	<message key="plugins.generic.openAIRE.description">OpenAIRE Guidelines for Literature Repository Managers v4 compliance.</message>
 
   <message key="plugins.oaiMetadata.openAIRE.displayName">OpenAIRE JATS Metadata Format</message>
-  <message key="plugins.oaiMetadata.openAIRE.description">Structures metadata in a way that is consistent with the OpenAIRE Guidelines for Literature Repository Managers v4.</message>
+  <message key="plugins.oaiMetadata.openAIRE.description">
+    OAI-PMH metadatamuoto, joka on yhteensopiva  OpenAIRE Guidelines for Literature Repository Managers v4 -ohjeistuksen kanssa.</message>
 
-  <message key="plugins.generic.openAIRE.resourceType.title">Type of articles published in this section</message>
-  <message key="plugins.generic.openAIRE.resourceType.description"><![CDATA[For better OpenAIRE compliance, uses COAR Resource Type Genres <a target="_new" href="http://vocabularies.coar-repositories.org/documentation/resource_types/2.0.draft/">http://vocabularies.coar-repositories.org/documentation/resource_types/2.0.draft/</a>]]></message>
+  <message key="plugins.generic.openAIRE.resourceType.title">Sisältötyyppi, joka kuvaa parhaiten tässä osastossa julkaistuja artikkeleita</message>
+  <message key="plugins.generic.openAIRE.resourceType.description"><![CDATA[Sisältötyypin valinta parantaa OpenAIRE-yhteensopivuutta. Sisältötyypit noudattavat COAR Resource Type Genres -sanastoa <a target="_new" href="http://vocabularies.coar-repositories.org/documentation/resource_types/2.0.draft/">http://vocabularies.coar-repositories.org/documentation/resource_types/2.0.draft/</a>]]></message>
 
   <message key="plugins.generic.openAIRE.COAR.journalArticle">journal article</message>
   <message key="plugins.generic.openAIRE.COAR.dataPaper">data paper</message>
