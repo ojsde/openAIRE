@@ -37,11 +37,10 @@ class OAIMetadataFormat_OpenAIRE extends OAIMetadataFormat {
 		$articleLocale = $article->getLocale();
 		$publisherInstitution = $journal->getSetting('publisherInstitution');
 		$datePublished = $article->getDatePublished();
+		$resourceType = ($section->getData('resourceType') ? $section->getData('resourceType') : 'http://purl.org/coar/resource_type/c_6501'); # COAR resource type URI, defaults to "journal article"
 		if (!$datePublished) $datePublished = $issue->getDatePublished();
 		if ($datePublished) $datePublished = strtotime($datePublished);
-
-		# COAR resource type
-		$resourceType = ($section->getData('resourceType') ? $section->getData('resourceType') : 'http://purl.org/coar/resource_type/c_6501');
+		$parentPlugin = PluginRegistry::getPlugin('generic', 'openaireplugin');
 
 		$response = "<article
 			xmlns:xlink=\"http://www.w3.org/1999/xlink\"
@@ -56,12 +55,13 @@ class OAIMetadataFormat_OpenAIRE extends OAIMetadataFormat {
 			<journal-title xml:lang=\"" . substr($journal->getPrimaryLocale(), 0, 2) . "\">" . htmlspecialchars($journal->getName($journal->getPrimaryLocale())) . "</journal-title>";
 			$response .= ($journal->getAcronym($journal->getPrimaryLocale())?"<abbrev-journal-title xml:lang=\"" . substr($journal->getPrimaryLocale(), 0, 2) . "\">" . htmlspecialchars($journal->getAcronym($journal->getPrimaryLocale())) . "</abbrev-journal-title>":'');
 
-		// Include translated journal titles
+		// Translated journal titles
 		foreach ($journal->getName(null) as $locale => $title) {
 			if ($locale == $journal->getPrimaryLocale()) continue;
 			$response .= "<trans-title-group xml:lang=\"" . substr($locale, 0, 2) . "\"><trans-title>" . htmlspecialchars($title) . "</trans-title></trans-title-group>\n";
 		}
 		$response .= '</journal-title-group>';
+
 		$response .=
 			(!empty($onlineIssn)?"\t\t\t<issn pub-type=\"epub\">" . htmlspecialchars($onlineIssn) . "</issn>":'') .
 			(!empty($printIssn)?"\t\t\t<issn pub-type=\"ppub\">" . htmlspecialchars($printIssn) . "</issn>":'') .
@@ -73,7 +73,8 @@ class OAIMetadataFormat_OpenAIRE extends OAIMetadataFormat {
 			"\t\t\t<title-group>\n" .
 			"\t\t\t\t<article-title xml:lang=\"" . substr($articleLocale, 0, 2) . "\">" . htmlspecialchars(strip_tags($article->getTitle($articleLocale))) . "</article-title>\n";
 		if (!empty($subtitle = $article->getSubtitle($articleLocale))) $response .= "\t\t\t\t<subtitle xml:lang=\"" . substr($articleLocale, 0, 2) . "\">" . htmlspecialchars($subtitle) . "</subtitle>\n";
-		// Include translated journal titles
+
+		// Translated article titles
 		foreach ($article->getTitle(null) as $locale => $title) {
 			if ($locale == $articleLocale) continue;
 			if ($title){
@@ -86,7 +87,8 @@ class OAIMetadataFormat_OpenAIRE extends OAIMetadataFormat {
 		$response .=
 			"\t\t\t</title-group>\n" .
 			"\t\t\t<contrib-group content-type=\"author\">\n";
-		// Include authors
+
+		// Authors
 		$affiliations = array();
 		foreach ($article->getAuthors() as $author) {
 			$affiliation = $author->getLocalizedAffiliation();
@@ -109,6 +111,8 @@ class OAIMetadataFormat_OpenAIRE extends OAIMetadataFormat {
 		foreach ($affiliations as $affiliationToken => $affiliation) {
 			$response .= "\t\t\t<aff id=\"$affiliationToken\"><institution content-type=\"orgname\">" . htmlspecialchars($affiliation) . "</institution></aff>\n";
 		}
+
+		// Publication date
 		if ($datePublished) $response .=
 			"\t\t\t<pub-date date-type=\"pub\" publication-format=\"epub\">\n" .
 			"\t\t\t\t<day>" . strftime('%d', $datePublished) . "</day>\n" .
@@ -116,38 +120,21 @@ class OAIMetadataFormat_OpenAIRE extends OAIMetadataFormat {
 			"\t\t\t\t<year>" . strftime('%Y', $datePublished) . "</year>\n" .
 			"\t\t\t</pub-date>\n";
 
+		// Issue details
 		if ($issue->getVolume() && $issue->getShowVolume())
 			$response .= "\t\t\t<volume>" . htmlspecialchars($issue->getVolume()) . "</volume>\n";
 		if ($issue->getNumber() && $issue->getShowNumber())
-			$response .= "\t\t\t<issue>" . htmlspecialchars($issue->getNumber()) . "</issue>\n";			
+			$response .= "\t\t\t<issue>" . htmlspecialchars($issue->getNumber()) . "</issue>\n";
 
-		// Include page info, if available and parseable.
-		$matches = $pageCount = null;
-		if (PKPString::regexp_match_get('/^(\d+)$/', $article->getPages(), $matches)) {
-			$matchedPage = htmlspecialchars($matches[1]);
-			$response .= "\t\t\t\t<fpage>$matchedPage</fpage><lpage>$matchedPage</lpage>\n";
-			$pageCount = 1;
-		} elseif (PKPString::regexp_match_get('/^[Pp][Pp]?[.]?[ ]?(\d+)$/', $article->getPages(), $matches)) {
-			$matchedPage = htmlspecialchars($matches[1]);
-			$response .= "\t\t\t\t<fpage>$matchedPage</fpage><lpage>$matchedPage</lpage>\n";
-			$pageCount = 1;
-		} elseif (PKPString::regexp_match_get('/^[Pp][Pp]?[.]?[ ]?(\d+)[ ]?-[ ]?([Pp][Pp]?[.]?[ ]?)?(\d+)$/', $article->getPages(), $matches)) {
-			$matchedPageFrom = htmlspecialchars($matches[1]);
-			$matchedPageTo = htmlspecialchars($matches[3]);
+		// Page info, if available and parseable.
+		$pageInfo = $this->_getPageInfo($article);
+		if ($pageInfo){
 			$response .=
-				"\t\t\t\t<fpage>$matchedPageFrom</fpage>\n" .
-				"\t\t\t\t<lpage>$matchedPageTo</lpage>\n";
-			$pageCount = $matchedPageTo - $matchedPageFrom + 1;
-		} elseif (PKPString::regexp_match_get('/^(\d+)[ ]?-[ ]?(\d+)$/', $article->getPages(), $matches)) {
-			$matchedPageFrom = htmlspecialchars($matches[1]);
-			$matchedPageTo = htmlspecialchars($matches[2]);
-			$response .=
-				"\t\t\t\t<fpage>$matchedPageFrom</fpage>\n" .
-				"\t\t\t\t<lpage>$matchedPageTo</lpage>\n";
-			$pageCount = $matchedPageTo - $matchedPageFrom + 1;
+				"\t\t\t\t<fpage>" . $pageInfo['fpage'] . "</fpage>\n" .
+				"\t\t\t\t<lpage>" . $pageInfo['lpage'] . "</lpage>\n";
 		}
 
-		// Fetch funding data from other plugins
+		// Fetch funding data from other plugins if available
 		$fundingReferences = null;
 		HookRegistry::call('OAIMetadataFormat_OpenAIRE::findFunders', array(&$articleId, &$fundingReferences));
 		if ($fundingReferences){
@@ -155,39 +142,8 @@ class OAIMetadataFormat_OpenAIRE extends OAIMetadataFormat {
 		}
 
 		// OpenAIRE COAR Access Rights
-		$coarAccessRights = array(
-			'openAccess' => array('label' => 'open access', 'url' => 'http://purl.org/coar/access_right/c_abf2'),
-			'embargoedAccess' => array('label' => 'embargoed access', 'url' => 'http://purl.org/coar/access_right/c_abf2'),
-			'restrictedAccess' => array('label' => 'restricted access', 'url' => 'http://purl.org/coar/access_right/c_abf2'),
-			'metadataOnlyAccess' => array('label' => 'metadata only access', 'url' => 'http://purl.org/coar/access_right/c_abf2')
-		);
-
-		$accessRights = "";
-		if ($journal->getData('publishingMode') == PUBLISHING_MODE_OPEN) {
-			$accessRights = 'openAccess';
-
-		} else if ($journal->getData('publishingMode') == PUBLISHING_MODE_SUBSCRIPTION) {
-			if ($issue->getAccessStatus() == 0 || $issue->getAccessStatus() == ISSUE_ACCESS_OPEN) {
-				$accessRights = 'openAccess';
-			} else if ($issue->getAccessStatus() == ISSUE_ACCESS_SUBSCRIPTION) {
-				if (is_a($article, 'PublishedArticle') && $article->getAccessStatus() == ARTICLE_ACCESS_OPEN) {
-					$accessRights = 'openAccess';
-				} else if ($issue->getAccessStatus() == ISSUE_ACCESS_SUBSCRIPTION && $issue->getOpenAccessDate() != NULL) {
-					$accessRights = 'embargoedAccess';
-				} else if ($issue->getAccessStatus() == ISSUE_ACCESS_SUBSCRIPTION && $issue->getOpenAccessDate() == NULL) {
-					$accessRights = 'metadataOnlyAccess';
-				}
-			}
-		}
-		if ($journal->getData('restrictSiteAccess') == 1 || $journal->getData('restrictArticleAccess') == 1) {
-			$accessRights = 'restrictedAccess';
-		}
-
-		$openAccessDate = null;
-		if ($accessRights == 'embargoedAccess') {
-			$openAccessDate = date('Y-m-d', strtotime($issue->getOpenAccessDate()));
-		}
-
+		$accessRights = $this->_getAccessRights($journal, $issue, $article);
+		$coarAccessRights = $this->_getCoarAccessRights();
 		if ($accessRights) $response .=
 			"\t\t\t<custom-meta-group id=\"http://purl.org/coar/access_right\">\n" .
 			"\t\t\t\t<custom-meta>\n" .
@@ -195,12 +151,27 @@ class OAIMetadataFormat_OpenAIRE extends OAIMetadataFormat {
 			"\t\t\t\t\t<meta-value>" . $coarAccessRights[$accessRights]['url'] . "</meta-value>\n" .
 			"\t\t\t\t</custom-meta>\n" .
 			"\t\t\t</custom-meta-group>\n";
+ 
+		// OpenAIRE COAR Resource Type
+		$coarResourceLabel = $parentPlugin->_getCoarResourceType($resourceType);
+		if ($coarResourceLabel) $response .=
+			"\t\t\t<custom-meta-group id=\"http://purl.org/coar/resource_type\">\n" .
+			"\t\t\t\t<custom-meta>\n" .
+			"\t\t\t\t\t<meta-name>" . __($coarResourceLabel) . "</meta-name>\n" .
+			"\t\t\t\t\t<meta-value>" . $resourceType . "</meta-value>\n" .
+			"\t\t\t\t</custom-meta>\n" .
+			"\t\t\t</custom-meta-group>\n";
 
+		// Copyright, license and other permissions
 		AppLocale::requireComponents(LOCALE_COMPONENT_PKP_SUBMISSION);
 		$copyrightYear = $article->getCopyrightYear();
 		$copyrightHolder = $article->getLocalizedCopyrightHolder();
 		$licenseUrl = $article->getLicenseURL();
 		$ccBadge = Application::getCCLicenseBadge($licenseUrl);
+		$openAccessDate = null;
+		if ($accessRights == 'embargoedAccess') {
+			$openAccessDate = date('Y-m-d', strtotime($issue->getOpenAccessDate()));
+		}		
 		if ($copyrightYear || $copyrightHolder || $licenseUrl || $ccBadge || $openAccessDate || $accessRights == "openAccess" ) $response .=
 			"\t\t\t<permissions>\n" .
 			(($copyrightYear||$copyrightHolder)?"\t\t\t\t<copyright-statement>" . htmlspecialchars(__('submission.copyrightStatement', array('copyrightYear' => $copyrightYear, 'copyrightHolder' => $copyrightHolder))) . "</copyright-statement>\n":'') .
@@ -212,12 +183,10 @@ class OAIMetadataFormat_OpenAIRE extends OAIMetadataFormat {
 			($accessRights == "openAccess"?"\t\t\t\t<ali:free_to_read xmlns:ali=\"http://www.niso.org/schemas/ali/1.0/\" />\n":'') .
 			"\t\t\t</permissions>\n";
 
-			#($openAccessDate?"\t\t\t\t<ali:free_to_read xmlns:ali=\"http://www.niso.org/schemas/ali/1.0/\" start_date=\"" . htmlspecialchars($openAccessDate) . "\">\n":'') .
-
-		# landing page link
+		// landing page link
 		$response .= "\t\t\t<self-uri xlink:href=\"" . htmlspecialchars($request->url($journal->getPath(), 'article', 'view', $article->getBestArticleId())) . "\" />\n";
 
-		# full text links
+		// full text links
 		$galleys = $article->getGalleys();
 		$primaryGalleys = array();
 		if ($galleys) {
@@ -234,11 +203,11 @@ class OAIMetadataFormat_OpenAIRE extends OAIMetadataFormat {
 				}
 				if ($remoteUrl || in_array($file->getGenreId(), $primaryGenreIds)) {
 					$response .= "\t\t\t<self-uri content-type=\"" . $galley->getFileType() . "\" xlink:href=\"" . htmlspecialchars($request->url($journal->getPath(), 'article', 'download', array($article->getBestArticleId(), $galley->getBestGalleyId()), null, null, true)) . "\" />\n";
-
 				}
 			}
 		}
 
+		// Keywords
 		$subjects = array();
 		if (is_array($article->getSubject(null))) foreach ($article->getSubject(null) as $locale => $subject) {
 			$s = array_map('trim', explode(';', $subject));
@@ -262,16 +231,87 @@ class OAIMetadataFormat_OpenAIRE extends OAIMetadataFormat {
 				$response .= "\t\t\t<trans-abstract xml:lang=\"" . substr($locale, 0, 2) . "\">" . htmlspecialchars($title) . "</trans-abstract>\n";
 		}
 
+		// Page count
 		$response .=
-			(isset($pageCount)?"\t\t\t<counts><page-count count=\"" . (int) $pageCount. "\" /></counts>\n":'') .
+			($pageInfo?"\t\t\t<counts><page-count count=\"" . (int) $pageInfo['pagecount'] . "\" /></counts>\n":'');
+
+		$response .= 
 			"\t\t</article-meta>\n" .
-			"\t</front>\n";
-		$response .= "</article>";
+			"\t</front>\n" .
+			"</article>";
+
 		return $response;
 	}
 
+	/**
+	 * Get an associative array containing COAR Access Rights.
+	 * @return array
+	 */
+	function _getCoarAccessRights() {
+		static $coarAccessRights = array(
+			'openAccess' => array('label' => 'open access', 'url' => 'http://purl.org/coar/access_right/c_abf2'),
+			'embargoedAccess' => array('label' => 'embargoed access', 'url' => 'http://purl.org/coar/access_right/c_abf2'),
+			'restrictedAccess' => array('label' => 'restricted access', 'url' => 'http://purl.org/coar/access_right/c_abf2'),
+			'metadataOnlyAccess' => array('label' => 'metadata only access', 'url' => 'http://purl.org/coar/access_right/c_abf2')
+		);
+		return $coarAccessRights;
+	}
 
-
-
+	/**
+	 * Get an associative array containing page info
+	 * @return array
+	 */
+	function _getPageInfo($article) {
+		$matches = $pageCount = null;
+		if (PKPString::regexp_match_get('/^(\d+)$/', $article->getPages(), $matches)) {
+			$matchedPage = htmlspecialchars($matches[1]);
+			return array('fpage' => $matchedPage, 'lpage' => $matchedPage, 'pagecount' => '1');
+		} elseif (PKPString::regexp_match_get('/^[Pp][Pp]?[.]?[ ]?(\d+)$/', $article->getPages(), $matches)) {
+			$matchedPage = htmlspecialchars($matches[1]);
+			return array('fpage' => $matchedPage, 'lpage' => $matchedPage, 'pagecount' => '1');
+		} elseif (PKPString::regexp_match_get('/^[Pp][Pp]?[.]?[ ]?(\d+)[ ]?-[ ]?([Pp][Pp]?[.]?[ ]?)?(\d+)$/', $article->getPages(), $matches)) {
+			$matchedPageFrom = htmlspecialchars($matches[1]);
+			$matchedPageTo = htmlspecialchars($matches[3]);
+			$pageCount = $matchedPageTo - $matchedPageFrom + 1;
+			return array('fpage' => $matchedPageFrom, 'lpage' => $matchedPageTo, 'pagecount' => $pageCount);
+		} elseif (PKPString::regexp_match_get('/^(\d+)[ ]?-[ ]?(\d+)$/', $article->getPages(), $matches)) {
+			$matchedPageFrom = htmlspecialchars($matches[1]);
+			$matchedPageTo = htmlspecialchars($matches[2]);
+			$pageCount = $matchedPageTo - $matchedPageFrom + 1;
+			return array('fpage' => $matchedPageFrom, 'lpage' => $matchedPageTo, 'pagecount' => $pageCount);
+		} else {
+			return null;
+		}
+	}
+	
+	/**
+	 * Get article access rights
+	 * @param $journal
+	 * @param $issue
+	 * @param $article
+	 * @return string
+	 */
+	function _getAccessRights($journal, $issue, $article) {
+		$accessRights = null;
+		if ($journal->getData('publishingMode') == PUBLISHING_MODE_OPEN) {
+			$accessRights = 'openAccess';
+		} else if ($journal->getData('publishingMode') == PUBLISHING_MODE_SUBSCRIPTION) {
+			if ($issue->getAccessStatus() == 0 || $issue->getAccessStatus() == ISSUE_ACCESS_OPEN) {
+				$accessRights = 'openAccess';
+			} else if ($issue->getAccessStatus() == ISSUE_ACCESS_SUBSCRIPTION) {
+				if (is_a($article, 'PublishedArticle') && $article->getAccessStatus() == ARTICLE_ACCESS_OPEN) {
+					$accessRights = 'openAccess';
+				} else if ($issue->getAccessStatus() == ISSUE_ACCESS_SUBSCRIPTION && $issue->getOpenAccessDate() != NULL) {
+					$accessRights = 'embargoedAccess';
+				} else if ($issue->getAccessStatus() == ISSUE_ACCESS_SUBSCRIPTION && $issue->getOpenAccessDate() == NULL) {
+					$accessRights = 'metadataOnlyAccess';
+				}
+			}
+		}
+		if ($journal->getData('restrictSiteAccess') == 1 || $journal->getData('restrictArticleAccess') == 1) {
+			$accessRights = 'restrictedAccess';
+		}
+		return $accessRights;
+	}
 
 }

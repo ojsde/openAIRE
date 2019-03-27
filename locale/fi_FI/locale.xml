@@ -22,6 +22,7 @@
   <message key="plugins.generic.openAIRE.resourceType.title">Sisältötyyppi, joka kuvaa parhaiten tässä osastossa julkaistuja artikkeleita</message>
   <message key="plugins.generic.openAIRE.resourceType.description"><![CDATA[Sisältötyypin valinta parantaa OpenAIRE-yhteensopivuutta. Sisältötyypit noudattavat COAR Resource Type Genres -sanastoa <a target="_new" href="http://vocabularies.coar-repositories.org/documentation/resource_types/2.0.draft/">http://vocabularies.coar-repositories.org/documentation/resource_types/2.0.draft/</a>]]></message>
 
+  <!-- For official label translations see http://vocabularies.coar-repositories.org/documentation/resource_types/2.0.draft/ -->
   <message key="plugins.generic.openAIRE.COAR.journalArticle">journal article</message>
   <message key="plugins.generic.openAIRE.COAR.dataPaper">data paper</message>
   <message key="plugins.generic.openAIRE.COAR.reviewArticle">review article</message>

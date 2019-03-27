@@ -139,13 +139,12 @@ class OpenAIREPlugin extends GenericPlugin {
 	}
 
 	/**
-	 * Get an associative array of COAR Resource Type Genres.
-	 * (Includes default '' => "Choose One" string.)
-	 * @return array resourceTypeUri => resourceTypeLabel
+	 * Get a COAR Resource Type by URI. If $uri is null return all.
+	 * @param $uri string
+	 * @return mixed
 	 */
-	function _getResourceTypeOptions() {
-		static $resourceTypeOptions = array(
-				'' => 'common.chooseOne',
+	function _getCoarResourceType($uri = null) {
+		$resourceTypes = array(
 				'http://purl.org/coar/resource_type/c_6501' => 'plugins.generic.openAIRE.COAR.journalArticle',
 				'http://purl.org/coar/resource_type/c_beb9' => 'plugins.generic.openAIRE.COAR.dataPaper',
 				'http://purl.org/coar/resource_type/c_dcae04bc' => 'plugins.generic.openAIRE.COAR.reviewArticle',
@@ -156,10 +155,28 @@ class OpenAIREPlugin extends GenericPlugin {
 				'http://purl.org/coar/resource_type/c_816b' => 'plugins.generic.openAIRE.COAR.preprint',
 				'http://purl.org/coar/resource_type/c_93fc' => 'plugins.generic.openAIRE.COAR.report',
 				'http://purl.org/coar/resource_type/c_efa0' => 'plugins.generic.openAIRE.COAR.review',
+				'http://purl.org/coar/resource_type/c_ba08' => 'plugins.generic.openAIRE.COAR.bookReview',
+				'http://purl.org/coar/resource_type/c_5794' => 'plugins.generic.openAIRE.COAR.conferencePaper',
+				'http://purl.org/coar/resource_type/c_46ec' => 'plugins.generic.openAIRE.COAR.thesis',
 				'http://purl.org/coar/resource_type/c_8042' => 'plugins.generic.openAIRE.COAR.workingPaper'
 		);
-		return $resourceTypeOptions;
+		if ($uri){
+			return $resourceTypes[$uri];
+		} else {
+			return $resourceTypes;
+		}
 	}
 
+	/**
+	 * Get an associative array of all COAR Resource Type Genres for select element
+	 * (Includes default '' => "Choose One" string.)
+	 * @return array resourceTypeUri => resourceTypeLabel
+	 */
+	function _getResourceTypeOptions() {		
+		$resourceTypeOptions = $this->_getCoarResourceType(null);
+		$chooseOneOption = array('' => 'common.chooseOne');
+		$resourceTypeOptions  = $chooseOneOption + $resourceTypeOptions ;
+		return $resourceTypeOptions;
+	}
 }
 

@@ -21,6 +21,7 @@
   <message key="plugins.generic.openAIRE.resourceType.title">Type of articles published in this section</message>
   <message key="plugins.generic.openAIRE.resourceType.description"><![CDATA[For better OpenAIRE compliance, uses COAR Resource Type Genres <a target="_new" href="http://vocabularies.coar-repositories.org/documentation/resource_types/2.0.draft/">http://vocabularies.coar-repositories.org/documentation/resource_types/2.0.draft/</a>]]></message>
 
+  <!-- For official label translations see http://vocabularies.coar-repositories.org/documentation/resource_types/2.0.draft/ -->
   <message key="plugins.generic.openAIRE.COAR.journalArticle">journal article</message>
   <message key="plugins.generic.openAIRE.COAR.dataPaper">data paper</message>
   <message key="plugins.generic.openAIRE.COAR.reviewArticle">review article</message>
@@ -32,5 +33,7 @@
   <message key="plugins.generic.openAIRE.COAR.report">report</message>
   <message key="plugins.generic.openAIRE.COAR.review">review</message>
   <message key="plugins.generic.openAIRE.COAR.workingPaper">working paper</message>
+
+
 
 </locale>

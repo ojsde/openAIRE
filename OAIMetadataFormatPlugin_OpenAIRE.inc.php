@@ -17,7 +17,6 @@ import('lib.pkp.classes.plugins.OAIMetadataFormatPlugin');
 import('plugins.generic.openAIRE.OAIMetadataFormat_OpenAIRE');
 
 class OAIMetadataFormatPlugin_OpenAIRE extends OAIMetadataFormatPlugin {
-
 	/**
 	 * Get the name of this plugin. The name must be unique within
 	 * its category.
