@@ -157,8 +157,8 @@ class OpenAIREPlugin extends GenericPlugin {
 				'http://purl.org/coar/resource_type/c_ba08' => 'plugins.generic.openAIRE.COAR.bookReview',
 				'http://purl.org/coar/resource_type/c_5794' => 'plugins.generic.openAIRE.COAR.conferencePaper',
 				'http://purl.org/coar/resource_type/c_46ec' => 'plugins.generic.openAIRE.COAR.thesis',
-				'http://purl.org/coar/resource_type/c_8042' => 'plugins.generic.openAIRE.COAR.workingPaper'
-				'http://purl.org/coar/resource_type/c_816b' => 'plugins.generic.openAIRE.COAR.preprint',
+				'http://purl.org/coar/resource_type/c_8042' => 'plugins.generic.openAIRE.COAR.workingPaper',
+				'http://purl.org/coar/resource_type/c_816b' => 'plugins.generic.openAIRE.COAR.preprint'
 		);
 		if ($uri){
 			return $resourceTypes[$uri];
