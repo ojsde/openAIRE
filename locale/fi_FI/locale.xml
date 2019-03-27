@@ -10,7 +10,7 @@
   * Localization information: https://pkp.sfu.ca/wiki/index.php?title=Translating_OxS
   * Localization strings.
   -->
- 
+
 <locale name="fi_FI" full_name="Suomi">
 	<message key="plugins.generic.openAIRE.displayName">OpenAIRE</message>
 	<message key="plugins.generic.openAIRE.description">OpenAIRE Guidelines for Literature Repository Managers v4 compliance.</message>
@@ -33,6 +33,9 @@
   <message key="plugins.generic.openAIRE.COAR.preprint">preprint</message>
   <message key="plugins.generic.openAIRE.COAR.report">report</message>
   <message key="plugins.generic.openAIRE.COAR.review">review</message>
+  <message key="plugins.generic.openAIRE.COAR.bookReview">book review</message>
+  <message key="plugins.generic.openAIRE.COAR.conferencePaper">conference paper</message>
+  <message key="plugins.generic.openAIRE.COAR.thesis">thesis</message>
   <message key="plugins.generic.openAIRE.COAR.workingPaper">working paper</message>
 
 </locale>

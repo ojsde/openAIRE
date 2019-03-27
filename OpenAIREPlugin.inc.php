@@ -146,19 +146,19 @@ class OpenAIREPlugin extends GenericPlugin {
 	function _getCoarResourceType($uri = null) {
 		$resourceTypes = array(
 				'http://purl.org/coar/resource_type/c_6501' => 'plugins.generic.openAIRE.COAR.journalArticle',
-				'http://purl.org/coar/resource_type/c_beb9' => 'plugins.generic.openAIRE.COAR.dataPaper',
-				'http://purl.org/coar/resource_type/c_dcae04bc' => 'plugins.generic.openAIRE.COAR.reviewArticle',
 				'http://purl.org/coar/resource_type/c_2df8fbb1' => 'plugins.generic.openAIRE.COAR.researchArticle',
+				'http://purl.org/coar/resource_type/c_dcae04bc' => 'plugins.generic.openAIRE.COAR.reviewArticle',
+				'http://purl.org/coar/resource_type/c_beb9' => 'plugins.generic.openAIRE.COAR.dataPaper',
 				'http://purl.org/coar/resource_type/c_7bab' => 'plugins.generic.openAIRE.COAR.softwarePaper',
 				'http://purl.org/coar/resource_type/c_b239' => 'plugins.generic.openAIRE.COAR.editorial',
 				'http://purl.org/coar/resource_type/c_545b' => 'plugins.generic.openAIRE.COAR.letterToTheEditor',
-				'http://purl.org/coar/resource_type/c_816b' => 'plugins.generic.openAIRE.COAR.preprint',
 				'http://purl.org/coar/resource_type/c_93fc' => 'plugins.generic.openAIRE.COAR.report',
 				'http://purl.org/coar/resource_type/c_efa0' => 'plugins.generic.openAIRE.COAR.review',
 				'http://purl.org/coar/resource_type/c_ba08' => 'plugins.generic.openAIRE.COAR.bookReview',
 				'http://purl.org/coar/resource_type/c_5794' => 'plugins.generic.openAIRE.COAR.conferencePaper',
 				'http://purl.org/coar/resource_type/c_46ec' => 'plugins.generic.openAIRE.COAR.thesis',
 				'http://purl.org/coar/resource_type/c_8042' => 'plugins.generic.openAIRE.COAR.workingPaper'
+				'http://purl.org/coar/resource_type/c_816b' => 'plugins.generic.openAIRE.COAR.preprint',
 		);
 		if ($uri){
 			return $resourceTypes[$uri];
