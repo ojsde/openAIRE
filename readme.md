@@ -19,7 +19,7 @@ This plugin is licensed under the GNU General Public License v3. See the file LI
 
 System Requirements
 -------------------
-OJS 3.1.2 i.e. OMP 3.1.2 or greater.
+OJS 3.1.2 or greater.
 PHP 7.0 or greater.
 
 Install
