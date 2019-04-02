@@ -83,7 +83,7 @@ class OpenAIREPlugin extends GenericPlugin {
 		$smarty =& $args[1];
 		$output =& $args[2];
 		$smarty->assign('resourceTypeOptions', $this->_getResourceTypeOptions());
-		$output .= $smarty->fetch($this->getTemplateResource('controllers/grids/settings/section/form/sectionFormAdditionalFields.tpl'));
+		$output .= $smarty->fetch($this->getTemplatePath() . 'controllers/grids/settings/section/form/sectionFormAdditionalFields.tpl');
 		return false;
 	}
 
@@ -178,5 +178,13 @@ class OpenAIREPlugin extends GenericPlugin {
 		$resourceTypeOptions  = $chooseOneOption + $resourceTypeOptions ;
 		return $resourceTypeOptions;
 	}
+
+	/**
+	 * @copydoc PKPPlugin::getTemplatePath
+	 */
+	function getTemplatePath($inCore = false) {
+		return $this->getTemplateResourceName() . ':templates/';
+	}
+
 }
 
