@@ -25,11 +25,14 @@ PHP 7.0 or greater.
 Install
 -------
 
- * Disable the old OpenAIRE plugin from Settings -> Website -> Plugins -> Generic Plugin -> OpenAIRE Plugin.
- * Remove the old OpenAIRE plugin from plugins/generic/openAIRE/.
- * Copy the release source or unpack the release package into the OJS plugins/generic/openAIRE/ folder.
- * Go to Settings -> Website -> Plugins -> Generic Plugin -> OpenAIRE Plugin and enable the plugin.
- 
+Installing using a release from Github:
+
+ 1. Download the latest compatible release from https://github.com/ojsde/openAIRE/releases. Unzip.
+ 2. Disable the old OpenAIRE plugin from Settings -> Website -> Plugins -> Generic Plugin -> OpenAIRE Plugin.
+ 3. Remove the old OpenAIRE plugin folder from plugins/generic/.
+ 4. Move the new OpenAIRE plugin folder to OJS plugins/generic/ folder.
+ 5. Go to Settings -> Website -> Plugins -> Generic Plugin -> OpenAIRE Plugin and enable the plugin.
+
 Version History
 ---------------
 
@@ -40,8 +43,9 @@ Version 2.0 was published in March 2019.
 Sponsors
 ---------------
 
-Version 2.0 of the plugin was created by The Federation of Finnish Learned Societies (https://tsv.fi) with funding provided by the Deutsche 
-Forschungsgemeinschaft and Freie Universität Berlin.
+Version 2.0 of the plugin was created by The Federation of Finnish
+Learned Societies (https://tsv.fi) with funding provided by the Deutsche
+Forschungsgemeinschaft and Freie Universität Berlin/CeDiS.
 
 TODO
 ---------------
