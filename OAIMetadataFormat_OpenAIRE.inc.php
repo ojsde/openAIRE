@@ -37,6 +37,7 @@ class OAIMetadataFormat_OpenAIRE extends OAIMetadataFormat {
 		$articleLocale = $article->getLocale();
 		$publisherInstitution = $journal->getSetting('publisherInstitution');
 		$datePublished = $article->getDatePublished();
+		$accessRights = $this->_getAccessRights($journal, $issue, $article);
 		$resourceType = ($section->getData('resourceType') ? $section->getData('resourceType') : 'http://purl.org/coar/resource_type/c_6501'); # COAR resource type URI, defaults to "journal article"
 		if (!$datePublished) $datePublished = $issue->getDatePublished();
 		if ($datePublished) $datePublished = strtotime($datePublished);
@@ -46,7 +47,7 @@ class OAIMetadataFormat_OpenAIRE extends OAIMetadataFormat {
 			xmlns:xlink=\"http://www.w3.org/1999/xlink\"
 			xmlns:mml=\"http://www.w3.org/1998/Math/MathML\"
 			xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"
-			article-type=\"" . htmlspecialchars($resourceType) . "\" 
+			article-type=\"" . htmlspecialchars($this->_mapCoarResourceTypeToJatsArticleType($resourceType)) . "\" 
 			xml:lang=\"" . substr($articleLocale, 0, 2) . "\">
 			<front>
 			<journal-meta>
@@ -142,7 +143,6 @@ class OAIMetadataFormat_OpenAIRE extends OAIMetadataFormat {
 		}
 
 		// OpenAIRE COAR Access Rights
-		$accessRights = $this->_getAccessRights($journal, $issue, $article);
 		$coarAccessRights = $this->_getCoarAccessRights();
 		if ($accessRights) $response .=
 			"\t\t\t<custom-meta-group id=\"http://purl.org/coar/access_right\">\n" .
@@ -255,6 +255,32 @@ class OAIMetadataFormat_OpenAIRE extends OAIMetadataFormat {
 			'metadataOnlyAccess' => array('label' => 'metadata only access', 'url' => 'http://purl.org/coar/access_right/c_abf2')
 		);
 		return $coarAccessRights;
+	}
+
+	/**
+	 * Get a JATS article-type string based on COAR Resource Type URI.
+	 * https://jats.nlm.nih.gov/archiving/tag-library/1.1/attribute/article-type.html
+	 * @param $uri string
+	 * @return string
+	 */
+	function _mapCoarResourceTypeToJatsArticleType($uri) {
+		$resourceTypes = array(
+				'http://purl.org/coar/resource_type/c_6501' => 'research-article',
+				'http://purl.org/coar/resource_type/c_2df8fbb1' => 'research-article',
+				'http://purl.org/coar/resource_type/c_dcae04bc' => 'review-article',
+				'http://purl.org/coar/resource_type/c_beb9' => 'research-article',
+				'http://purl.org/coar/resource_type/c_7bab' => 'research-article',
+				'http://purl.org/coar/resource_type/c_b239' => 'editorial',
+				'http://purl.org/coar/resource_type/c_545b' => 'letter',
+				'http://purl.org/coar/resource_type/c_93fc' => 'case-report',
+				'http://purl.org/coar/resource_type/c_efa0' => 'product-review',
+				'http://purl.org/coar/resource_type/c_ba08' => 'book-review',
+				'http://purl.org/coar/resource_type/c_5794' => 'meeting-report',
+				'http://purl.org/coar/resource_type/c_46ec' => 'dissertation',
+				'http://purl.org/coar/resource_type/c_8042' => 'research-article',
+				'http://purl.org/coar/resource_type/c_816b' => 'research-article'
+		);
+		return $resourceTypes[$uri];
 	}
 
 	/**
