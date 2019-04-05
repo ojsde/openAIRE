@@ -10,6 +10,6 @@
  *}
 <div style="clear:both;">
 	{fbvFormSection title="plugins.generic.openAIRE.resourceType.title" for="resourceType" inline=true}
-		{fbvElement type="select" id="resourceType" from=$resourceTypeOptions selected=$resourceType label="plugins.generic.openAIRE.resourceType.description"}
+		{fbvElement type="select" id="resourceType" from=$resourceTypeOptions selected=$resourceType label="plugins.generic.openAIRE.resourceType.description" translate=false}
 	{/fbvFormSection}
 </div>
