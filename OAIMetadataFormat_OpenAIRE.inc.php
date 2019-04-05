@@ -358,7 +358,7 @@ class OAIMetadataFormat_OpenAIRE extends OAIMetadataFormat {
 		$fundingReferences .= "\t\t\t\t\t\t\t<institution-id institution-id-type=\"doi\" vocab=\"open-funder-registry\" vocab-identifier=\"http://dx.doi.org/10.13039/100011102\">http://dx.doi.org/10.13039/100011102</institution-id>\n";
 		$fundingReferences .= "\t\t\t\t\t\t</institution-wrap>\n";
 		$fundingReferences .= "\t\t\t\t\t</funding-source>\n";
-			$fundingReferences .= "\t\t\t\t\t<award-id>" . $legacyProjectID . "</award-id>\n";
+		$fundingReferences .= "\t\t\t\t\t<award-id>" . $legacyProjectID . "</award-id>\n";
 		$fundingReferences .= "\t\t\t\t</award-group>\n";
 		$fundingReferences .= "\t\t\t</funding-group>\n";
 		return $fundingReferences; 
