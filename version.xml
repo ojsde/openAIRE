@@ -13,7 +13,7 @@
 <version>
 	<application>openAIRE</application>
 	<type>plugins.generic</type>
-	<release>2.0.0.1</release>
+	<release>2.0.1.0</release>
 	<date>2019-03-17</date>
 	<lazy-load>1</lazy-load>
 	<class>OpenAIREPlugin</class>
