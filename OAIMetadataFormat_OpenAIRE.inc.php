@@ -138,6 +138,10 @@ class OAIMetadataFormat_OpenAIRE extends OAIMetadataFormat {
 		// Fetch funding data from other plugins if available
 		$fundingReferences = null;
 		HookRegistry::call('OAIMetadataFormat_OpenAIRE::findFunders', array(&$articleId, &$fundingReferences));
+
+		// Try to fetch legacy projectID from article metadata
+		if (!$fundingReferences && $article->getData('projectID')) $fundingReferences = $this->_getLegacyProjectId($article->getData('projectID'));
+
 		if ($fundingReferences){
 			$response .= $fundingReferences;
 		}
@@ -340,4 +344,23 @@ class OAIMetadataFormat_OpenAIRE extends OAIMetadataFormat {
 		return $accessRights;
 	}
 
+	/**
+	 * Get legacy FP7 projectID stored with the old OpenAIRE plugin 
+	 * @param $legacyProjectID
+	 * @return string	 
+	 */
+	function _getLegacyProjectId($legacyProjectID) {
+		$fundingReferences = "\t\t\t<funding-group specific-use=\"crossref\">\n";		
+		$fundingReferences .= "\t\t\t\t<award-group id=\"group-1\">\n";
+		$fundingReferences .= "\t\t\t\t\t<funding-source id=\"source-1\">\n";
+		$fundingReferences .= "\t\t\t\t\t\t<institution-wrap>\n";
+		$fundingReferences .= "\t\t\t\t\t\t\t<institution>Seventh Framework Programme</institution>\n";
+		$fundingReferences .= "\t\t\t\t\t\t\t<institution-id institution-id-type=\"doi\" vocab=\"open-funder-registry\" vocab-identifier=\"http://dx.doi.org/10.13039/100011102\">http://dx.doi.org/10.13039/100011102</institution-id>\n";
+		$fundingReferences .= "\t\t\t\t\t\t</institution-wrap>\n";
+		$fundingReferences .= "\t\t\t\t\t</funding-source>\n";
+			$fundingReferences .= "\t\t\t\t\t<award-id>" . $legacyProjectID . "</award-id>\n";
+		$fundingReferences .= "\t\t\t\t</award-group>\n";
+		$fundingReferences .= "\t\t\t</funding-group>\n";
+		return $fundingReferences; 
+	}
 }
