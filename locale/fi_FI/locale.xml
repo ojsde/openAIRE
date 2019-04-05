@@ -22,20 +22,4 @@
   <message key="plugins.generic.openAIRE.resourceType.title">Sisältötyyppi, joka kuvaa parhaiten tässä osastossa julkaistuja artikkeleita</message>
   <message key="plugins.generic.openAIRE.resourceType.description"><![CDATA[Sisältötyypin valinta parantaa OpenAIRE-yhteensopivuutta. Sisältötyypit noudattavat COAR Resource Type Genres -sanastoa <a target="_new" href="http://vocabularies.coar-repositories.org/documentation/resource_types/2.0.draft/">http://vocabularies.coar-repositories.org/documentation/resource_types/2.0.draft/</a>]]></message>
 
-  <!-- For official label translations see http://vocabularies.coar-repositories.org/documentation/resource_types/2.0.draft/ -->
-  <message key="plugins.generic.openAIRE.COAR.journalArticle">journal article</message>
-  <message key="plugins.generic.openAIRE.COAR.dataPaper">data paper</message>
-  <message key="plugins.generic.openAIRE.COAR.reviewArticle">review article</message>
-  <message key="plugins.generic.openAIRE.COAR.researchArticle">research article</message>
-  <message key="plugins.generic.openAIRE.COAR.softwarePaper">software paper</message>
-  <message key="plugins.generic.openAIRE.COAR.editorial">editorial</message>
-  <message key="plugins.generic.openAIRE.COAR.letterToTheEditor">letter to the editor</message>
-  <message key="plugins.generic.openAIRE.COAR.preprint">preprint</message>
-  <message key="plugins.generic.openAIRE.COAR.report">report</message>
-  <message key="plugins.generic.openAIRE.COAR.review">review</message>
-  <message key="plugins.generic.openAIRE.COAR.bookReview">book review</message>
-  <message key="plugins.generic.openAIRE.COAR.conferencePaper">conference paper</message>
-  <message key="plugins.generic.openAIRE.COAR.thesis">thesis</message>
-  <message key="plugins.generic.openAIRE.COAR.workingPaper">working paper</message>
-
 </locale>
