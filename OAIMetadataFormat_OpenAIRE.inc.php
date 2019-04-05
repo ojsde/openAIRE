@@ -161,7 +161,7 @@ class OAIMetadataFormat_OpenAIRE extends OAIMetadataFormat {
 		if ($coarResourceLabel) $response .=
 			"\t\t\t<custom-meta-group id=\"http://purl.org/coar/resource_type\">\n" .
 			"\t\t\t\t<custom-meta>\n" .
-			"\t\t\t\t\t<meta-name>" . __($coarResourceLabel) . "</meta-name>\n" .
+			"\t\t\t\t\t<meta-name>" . $coarResourceLabel . "</meta-name>\n" .
 			"\t\t\t\t\t<meta-value>" . $resourceType . "</meta-value>\n" .
 			"\t\t\t\t</custom-meta>\n" .
 			"\t\t\t</custom-meta-group>\n";
