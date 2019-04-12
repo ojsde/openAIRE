@@ -180,10 +180,3 @@ After enabling the plugin, follow these steps to register with OpenAIRE
 8. Please open a ticket at OpenAIRE Helpdesk under https://www.openaire.eu/support/helpdesk (choose “Content Providers”) to draw attention to your registration and let us know that you want your metadata to be included in the JATS format. 
 
 Note, that eventually the registration process will be updated to include the JATS-option so that the last step of this guide will be redundant.
-
-
-
-
-
-
-
