@@ -43,29 +43,31 @@ class OAIMetadataFormat_OpenAIRE extends OAIMetadataFormat {
 		if ($datePublished) $datePublished = strtotime($datePublished);
 		$parentPlugin = PluginRegistry::getPlugin('generic', 'openaireplugin');
 
-		$response = "<article
-			xmlns:xlink=\"http://www.w3.org/1999/xlink\"
-			xmlns:mml=\"http://www.w3.org/1998/Math/MathML\"
-			xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"
+		$response = "
+		<article 
+			dtd-version=\"1.1d3\" 
+			xmlns:xlink=\"http://www.w3.org/1999/xlink\" 
+			xmlns:mml=\"http://www.w3.org/1998/Math/MathML\" 
+			xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" 
+			xmlns:ali=\"http://www.niso.org/schemas/ali/1.0\" 
 			article-type=\"" . htmlspecialchars($this->_mapCoarResourceTypeToJatsArticleType($resourceType)) . "\" 
 			xml:lang=\"" . substr($articleLocale, 0, 2) . "\">
-			<front>
-			<journal-meta>
-				<journal-id journal-id-type=\"ojs\">" . htmlspecialchars($journal->getPath()) . "</journal-id>
-				<journal-title-group>
-			<journal-title xml:lang=\"" . substr($journal->getPrimaryLocale(), 0, 2) . "\">" . htmlspecialchars($journal->getName($journal->getPrimaryLocale())) . "</journal-title>";
-			$response .= ($journal->getAcronym($journal->getPrimaryLocale())?"<abbrev-journal-title xml:lang=\"" . substr($journal->getPrimaryLocale(), 0, 2) . "\">" . htmlspecialchars($journal->getAcronym($journal->getPrimaryLocale())) . "</abbrev-journal-title>":'');
-
+		<front>
+		<journal-meta>
+			<journal-id journal-id-type=\"ojs\">" . htmlspecialchars($journal->getPath()) . "</journal-id>
+			<journal-title-group>
+			<journal-title xml:lang=\"" . substr($journal->getPrimaryLocale(), 0, 2) . "\">" . htmlspecialchars($journal->getName($journal->getPrimaryLocale())) . "</journal-title>\n";
 		// Translated journal titles
 		foreach ($journal->getName(null) as $locale => $title) {
 			if ($locale == $journal->getPrimaryLocale()) continue;
-			$response .= "<trans-title-group xml:lang=\"" . substr($locale, 0, 2) . "\"><trans-title>" . htmlspecialchars($title) . "</trans-title></trans-title-group>\n";
+			$response .= "\t\t\t<trans-title-group xml:lang=\"" . substr($locale, 0, 2) . "\"><trans-title>" . htmlspecialchars($title) . "</trans-title></trans-title-group>\n";
 		}
-		$response .= '</journal-title-group>';
+		$response .= ($journal->getAcronym($journal->getPrimaryLocale())?"\t\t\t<abbrev-journal-title xml:lang=\"" . substr($journal->getPrimaryLocale(), 0, 2) . "\">" . htmlspecialchars($journal->getAcronym($journal->getPrimaryLocale())) . "</abbrev-journal-title>":'');		
+		$response .= "\n\t\t\t</journal-title-group>\n";
 
 		$response .=
-			(!empty($onlineIssn)?"\t\t\t<issn pub-type=\"epub\">" . htmlspecialchars($onlineIssn) . "</issn>":'') .
-			(!empty($printIssn)?"\t\t\t<issn pub-type=\"ppub\">" . htmlspecialchars($printIssn) . "</issn>":'') .
+			(!empty($onlineIssn)?"\t\t\t<issn pub-type=\"epub\">" . htmlspecialchars($onlineIssn) . "</issn>\n":'') .
+			(!empty($printIssn)?"\t\t\t<issn pub-type=\"ppub\">" . htmlspecialchars($printIssn) . "</issn>\n":'') .
 			($publisherInstitution != ''?"\t\t\t<publisher><publisher-name>" . htmlspecialchars($publisherInstitution) . "</publisher-name></publisher>\n":'') .
 			"\t\t</journal-meta>\n" .
 			"\t\t<article-meta>\n" .
@@ -138,33 +140,9 @@ class OAIMetadataFormat_OpenAIRE extends OAIMetadataFormat {
 		// Fetch funding data from other plugins if available
 		$fundingReferences = null;
 		HookRegistry::call('OAIMetadataFormat_OpenAIRE::findFunders', array(&$articleId, &$fundingReferences));
-
-		// Try to fetch legacy projectID from article metadata
-		if (!$fundingReferences && $article->getData('projectID')) $fundingReferences = $this->_getLegacyProjectId($article->getData('projectID'));
-
 		if ($fundingReferences){
 			$response .= $fundingReferences;
 		}
-
-		// OpenAIRE COAR Access Rights
-		$coarAccessRights = $this->_getCoarAccessRights();
-		if ($accessRights) $response .=
-			"\t\t\t<custom-meta-group id=\"http://purl.org/coar/access_right\">\n" .
-			"\t\t\t\t<custom-meta>\n" .
-			"\t\t\t\t\t<meta-name>" . $coarAccessRights[$accessRights]['label'] . "</meta-name>\n" .
-			"\t\t\t\t\t<meta-value>" . $coarAccessRights[$accessRights]['url'] . "</meta-value>\n" .
-			"\t\t\t\t</custom-meta>\n" .
-			"\t\t\t</custom-meta-group>\n";
- 
-		// OpenAIRE COAR Resource Type
-		$coarResourceLabel = $parentPlugin->_getCoarResourceType($resourceType);
-		if ($coarResourceLabel) $response .=
-			"\t\t\t<custom-meta-group id=\"http://purl.org/coar/resource_type\">\n" .
-			"\t\t\t\t<custom-meta>\n" .
-			"\t\t\t\t\t<meta-name>" . $coarResourceLabel . "</meta-name>\n" .
-			"\t\t\t\t\t<meta-value>" . $resourceType . "</meta-value>\n" .
-			"\t\t\t\t</custom-meta>\n" .
-			"\t\t\t</custom-meta-group>\n";
 
 		// Copyright, license and other permissions
 		AppLocale::requireComponents(LOCALE_COMPONENT_PKP_SUBMISSION);
@@ -183,8 +161,8 @@ class OAIMetadataFormat_OpenAIRE extends OAIMetadataFormat {
 			($licenseUrl?"\t\t\t\t<license xlink:href=\"" . htmlspecialchars($licenseUrl) . "\">\n" .
 				($ccBadge?"\t\t\t\t\t<license-p>" . strip_tags($ccBadge) . "</license-p>\n":'') .
 			"\t\t\t\t</license>\n":'') . 
-			($openAccessDate?"\t\t\t\t<ali:free_to_read xmlns:ali=\"http://www.niso.org/schemas/ali/1.0/\" start_date=\"" . htmlspecialchars($openAccessDate) . "\" />\n":'') .
-			($accessRights == "openAccess"?"\t\t\t\t<ali:free_to_read xmlns:ali=\"http://www.niso.org/schemas/ali/1.0/\" />\n":'') .
+			($openAccessDate?"\t\t\t\t<ali:free_to_read xmlns:ali=\"http://www.niso.org/schemas/ali/1.0\" start_date=\"" . htmlspecialchars($openAccessDate) . "\" />\n":'') .
+			($accessRights == "openAccess"?"\t\t\t\t<ali:free_to_read xmlns:ali=\"http://www.niso.org/schemas/ali/1.0\" />\n":'') .
 			"\t\t\t</permissions>\n";
 
 		// landing page link
@@ -226,18 +204,39 @@ class OAIMetadataFormat_OpenAIRE extends OAIMetadataFormat {
 		// abstract
 		if ($article->getAbstract($articleLocale)) {
 			$abstract = PKPString::html2text($article->getAbstract($articleLocale));
-			$response .= "\t\t\t<abstract xml:lang=\"" . substr($articleLocale, 0, 2) . "\">" . htmlspecialchars($abstract) . "</abstract>\n";
+			$response .= "\t\t\t<abstract xml:lang=\"" . substr($articleLocale, 0, 2) . "\"><p>" . htmlspecialchars($abstract) . "</p></abstract>\n";
 		}
 		// Include translated abstracts
-		foreach ($article->getAbstract(null) as $locale => $title) {
+		foreach ($article->getAbstract(null) as $locale => $abstract) {
 			if ($locale == $articleLocale) continue;
-			if ($title)
-				$response .= "\t\t\t<trans-abstract xml:lang=\"" . substr($locale, 0, 2) . "\">" . htmlspecialchars($title) . "</trans-abstract>\n";
+			if ($abstract){
+				$abstract = PKPString::html2text($abstract);
+				$response .= "\t\t\t<trans-abstract xml:lang=\"" . substr($locale, 0, 2) . "\"><p>" . htmlspecialchars($abstract) . "</p></trans-abstract>\n";
+			}
 		}
 
 		// Page count
 		$response .=
 			($pageInfo?"\t\t\t<counts><page-count count=\"" . (int) $pageInfo['pagecount'] . "\" /></counts>\n":'');
+
+		// OpenAIRE COAR Access Rights and OpenAIRE COAR Resource Type
+		$coarAccessRights = $this->_getCoarAccessRights();
+		$coarResourceLabel = $parentPlugin->_getCoarResourceType($resourceType);
+
+		if ($accessRights || $coarResourceLabel){
+			$response .= "\t\t\t<custom-meta-group>\n";
+			if ($accessRights) $response .=
+				"\t\t\t\t<custom-meta specific-use=\"access-right\">\n" .
+				"\t\t\t\t\t<meta-name>" . $coarAccessRights[$accessRights]['label'] . "</meta-name>\n" .
+				"\t\t\t\t\t<meta-value>" . $coarAccessRights[$accessRights]['url'] . "</meta-value>\n" .
+				"\t\t\t\t</custom-meta>\n";
+			if ($coarResourceLabel) $response .=
+				"\t\t\t\t<custom-meta specific-use=\"resource-type\">\n" .
+				"\t\t\t\t\t<meta-name>" . $coarResourceLabel . "</meta-name>\n" .
+				"\t\t\t\t\t<meta-value>" . $resourceType . "</meta-value>\n" .
+				"\t\t\t\t</custom-meta>\n";
+			$response .=  "\t\t\t</custom-meta-group>\n";
+		}
 
 		$response .= 
 			"\t\t</article-meta>\n" .
@@ -344,23 +343,4 @@ class OAIMetadataFormat_OpenAIRE extends OAIMetadataFormat {
 		return $accessRights;
 	}
 
-	/**
-	 * Get legacy FP7 projectID stored with the old OpenAIRE plugin 
-	 * @param $legacyProjectID
-	 * @return string	 
-	 */
-	function _getLegacyProjectId($legacyProjectID) {
-		$fundingReferences = "\t\t\t<funding-group specific-use=\"crossref\">\n";		
-		$fundingReferences .= "\t\t\t\t<award-group id=\"group-1\">\n";
-		$fundingReferences .= "\t\t\t\t\t<funding-source id=\"source-1\">\n";
-		$fundingReferences .= "\t\t\t\t\t\t<institution-wrap>\n";
-		$fundingReferences .= "\t\t\t\t\t\t\t<institution>Seventh Framework Programme</institution>\n";
-		$fundingReferences .= "\t\t\t\t\t\t\t<institution-id institution-id-type=\"doi\" vocab=\"open-funder-registry\" vocab-identifier=\"http://dx.doi.org/10.13039/100011102\">http://dx.doi.org/10.13039/100011102</institution-id>\n";
-		$fundingReferences .= "\t\t\t\t\t\t</institution-wrap>\n";
-		$fundingReferences .= "\t\t\t\t\t</funding-source>\n";
-		$fundingReferences .= "\t\t\t\t\t<award-id>" . $legacyProjectID . "</award-id>\n";
-		$fundingReferences .= "\t\t\t\t</award-group>\n";
-		$fundingReferences .= "\t\t\t</funding-group>\n";
-		return $fundingReferences; 
-	}
 }
