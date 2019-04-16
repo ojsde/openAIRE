@@ -3,13 +3,13 @@
 About
 -----
 
-This plugin adds a new OAI-PMH metadataformat that supports OpenAIRE Guidelines for Literature Repository Managers v4 (https://openaire-guidelines-for-literature-repository-managers.readthedocs.io/en/v4.0.0/). The metadataformat uses JATS XML format.
+This plugin adds a new OAI-PMH metadata format that complements the OpenAIRE Guidelines for Literature Repository Managers v4 (https://openaire-guidelines-for-literature-repository-managers.readthedocs.io/en/v4.0.0/) and is optimized for works published in journals. The metadata format used is JATS XML format.
 
-In section settings journals can choose a COAR Resource Type that best describes the articles published in that section (https://www.coar-repositories.org/activities/repository-interoperability/coar-vocabularies/deliverables/).
+In section settings journals can choose a publication type from the COAR Resource Type vocabulary that best describes the articles published in that section (https://www.coar-repositories.org/activities/repository-interoperability/coar-vocabularies/deliverables/).
 
 The article access rights are shown by using the COAR Access Rights Vocabulary (https://www.coar-repositories.org/activities/repository-interoperability/coar-vocabularies/access-rights-vocabulary/).
 
-The OpenAIRE OAI metadaformat also contains a hook that can be used to inject funding data to the article entry. This means that journals can use any source of funding data they want. Funding Plugin for OJS3 supports this hook (https://github.com/ajnyga/funding).
+The OpenAIRE OAI metada format also contains a hook that can be used to inject funding data to the article entry. This means that journals can use any source of funding data they want. The funding Plugin for OJS3 supports this hook (https://github.com/ajnyga/funding).
 
 The plugin has been developed in cooperation with OpenAIRE.
 
@@ -180,10 +180,3 @@ After enabling the plugin, follow these steps to register with OpenAIRE
 8. Please open a ticket at OpenAIRE Helpdesk under https://www.openaire.eu/support/helpdesk (choose “Content Providers”) to draw attention to your registration and let us know that you want your metadata to be included in the JATS format. 
 
 Note, that eventually the registration process will be updated to include the JATS-option so that the last step of this guide will be redundant.
-
-
-
-
-
-
-
