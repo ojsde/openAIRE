@@ -24,6 +24,8 @@ class OpenAIREPlugin extends GenericPlugin {
 		if ($success && $this->getEnabled($mainContextId)) {
 			$this->import('OAIMetadataFormatPlugin_OpenAIRE');
 			PluginRegistry::register('oaiMetadataFormats', new OAIMetadataFormatPlugin_OpenAIRE($this), $this->getPluginPath());
+			$this->import('OpenAIREGatewayPlugin');
+			PluginRegistry::register('gateways', new OpenAIREGatewayPlugin($this), $this->getPluginPath());
 
 			# Handle COAR resource types in section forms
 			HookRegistry::register('sectiondao::getAdditionalFieldNames', array($this, 'addSectionDAOFieldNames'));			
