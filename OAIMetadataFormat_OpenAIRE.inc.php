@@ -37,6 +37,7 @@ class OAIMetadataFormat_OpenAIRE extends OAIMetadataFormat {
 		$articleLocale = $article->getLocale();
 		$publisherInstitution = $journal->getSetting('publisherInstitution');
 		$datePublished = $article->getDatePublished();
+		$articleDoi = $article->getStoredPubId('doi');
 		$accessRights = $this->_getAccessRights($journal, $issue, $article);
 		$resourceType = ($section->getData('resourceType') ? $section->getData('resourceType') : 'http://purl.org/coar/resource_type/c_6501'); # COAR resource type URI, defaults to "journal article"
 		if (!$datePublished) $datePublished = $issue->getDatePublished();
@@ -71,7 +72,8 @@ class OAIMetadataFormat_OpenAIRE extends OAIMetadataFormat {
 			($publisherInstitution != ''?"\t\t\t<publisher><publisher-name>" . htmlspecialchars($publisherInstitution) . "</publisher-name></publisher>\n":'') .
 			"\t\t</journal-meta>\n" .
 			"\t\t<article-meta>\n" .
-			"\t\t\t<article-id pub-id-type=\"publisher-id\">" . $article->getId() . "</article-id>\n" .
+			"\t\t\t<article-id pub-id-type=\"publisher-id\">" . $article->getId() . "</article-id>\n" . 
+			(!empty($articleDoi)?"\t\t\t<article-id pub-id-type=\"doi\">" . htmlspecialchars($articleDoi) . "</article-id>\n":'') .
 			"\t\t\t<article-categories><subj-group xml:lang=\"" . $journal->getPrimaryLocale() . "\" subj-group-type=\"heading\"><subject>" . htmlspecialchars($section->getLocalizedTitle()) . "</subject></subj-group></article-categories>\n" .
 			"\t\t\t<title-group>\n" .
 			"\t\t\t\t<article-title xml:lang=\"" . substr($articleLocale, 0, 2) . "\">" . htmlspecialchars(strip_tags($article->getTitle($articleLocale))) . "</article-title>\n";
