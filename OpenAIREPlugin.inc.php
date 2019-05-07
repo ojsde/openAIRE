@@ -104,7 +104,7 @@ class OpenAIREPlugin extends GenericPlugin {
 		$contextId = $context ? $context->getId() : CONTEXT_ID_NONE;
 		$sectionDao = DAORegistry::getDAO('SectionDAO');
 		$section = $sectionDao->getById($sectionForm->getSectionId(), $contextId);
-		$sectionForm->setData('resourceType', $section->getData('resourceType'));
+		if ($section) $sectionForm->setData('resourceType', $section->getData('resourceType'));
 	}
 
 	/**
