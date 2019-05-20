@@ -28,10 +28,13 @@ PHP 7.0 or greater.
 Version History
 ---------------
 
-### Version 2.0
+### Version 2.0.0.5
 
-Version 2.0 was published in April 2019.
+Fixes a bug with the creation of a new section.
 
+### Version 2.0.0
+
+Version 2.0.0 was published in April 2019 and is designed to work with OJS 3.1.1.
 
 Sponsors
 --------
