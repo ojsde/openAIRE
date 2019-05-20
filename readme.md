@@ -32,9 +32,9 @@ Version History
 
 Fixes a bug with the creation of a new section.
 
-### Version 2.1
+### Version 2.0.1
 
-Version 2.1 was published in April 2019 and is designed to work with OJS 3.1.2.
+Version 2.0.1 was published in April 2019 and is designed to work with OJS 3.1.2.
 
 
 Sponsors
