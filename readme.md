@@ -28,7 +28,7 @@ PHP 7.0 or greater.
 Version History
 ---------------
 
-### Version 2.1.4
+### Version 2.0.1.5
 
 Fixes a bug with the creation of a new section.
 
