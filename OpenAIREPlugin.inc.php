@@ -157,10 +157,13 @@ class OpenAIREPlugin extends GenericPlugin {
 				'http://purl.org/coar/resource_type/c_93fc' => 'report',
 				'http://purl.org/coar/resource_type/c_efa0' => 'review',
 				'http://purl.org/coar/resource_type/c_ba08' => 'book review',
+				'http://purl.org/coar/resource_type/c_26e4' => 'interview',
+				'http://purl.org/coar/resource_type/c_8544' => 'lecture',
 				'http://purl.org/coar/resource_type/c_5794' => 'conference paper',
 				'http://purl.org/coar/resource_type/c_46ec' => 'thesis',
 				'http://purl.org/coar/resource_type/c_8042' => 'working paper',
-				'http://purl.org/coar/resource_type/c_816b' => 'preprint'
+				'http://purl.org/coar/resource_type/c_816b' => 'preprint',
+				'http://purl.org/coar/resource_type/c_1843' => 'other'
 		);
 		if ($uri){
 			return $resourceTypes[$uri];
