@@ -7,8 +7,8 @@
 /**
  * @file OAIMetadataFormat_OpenAIRE.inc.php
  *
- * Copyright (c) 2013-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
+ * Copyright (c) 2013-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class OAIMetadataFormat_OpenAIRE
@@ -24,13 +24,14 @@ class OAIMetadataFormat_OpenAIRE extends OAIMetadataFormat {
 	 * @see OAIMetadataFormat#toXml
 	 */
 	function toXml($record, $format = null) {
+		$request = Application::getRequest();
 		$article = $record->getData('article');
 		$journal = $record->getData('journal');
 		$section = $record->getData('section');
 		$issue = $record->getData('issue');
 		$galleys = $record->getData('galleys');
 		$articleId = $article->getId();
-		$request = Application::getRequest();
+		$publication = $article->getCurrentPublication();
 		$abbreviation = $journal->getLocalizedSetting('abbreviation');
 		$printIssn = $journal->getSetting('printIssn');
 		$onlineIssn = $journal->getSetting('onlineIssn');
@@ -201,6 +202,16 @@ class OAIMetadataFormat_OpenAIRE extends OAIMetadataFormat {
 		if (!empty($subjects)) foreach ($subjects as $locale => $s) {
 			$response .= "\t\t\t<kwd-group xml:lang=\"" . substr($locale, 0, 2) . "\">\n";
 			foreach ($s as $subject) $response .= "\t\t\t\t<kwd>" . htmlspecialchars($subject) . "</kwd>\n";
+			$response .= "\t\t\t</kwd-group>\n";
+		}
+
+		$submissionKeywordDao = DAORegistry::getDAO('SubmissionKeywordDAO');
+		foreach ($submissionKeywordDao->getKeywords($publication->getId(), $journal->getSupportedLocales()) as $locale => $keywords) {
+			if (empty($keywords)) continue;
+			// Load the article.subject locale key in possible other languages
+			AppLocale::requireComponents(LOCALE_COMPONENT_APP_COMMON, $locale);
+			$response .= "\t\t\t<kwd-group xml:lang=\"" . substr($locale, 0, 2) . "\">\n";
+			foreach ($keywords as $keyword) $response .= "\t\t\t\t<kwd>" . htmlspecialchars($keyword) . "</kwd>\n";
 			$response .= "\t\t\t</kwd-group>\n";
 		}
 
