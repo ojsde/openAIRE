@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE locale SYSTEM "../../../../../lib/pkp/dtd/locale.dtd">
+
+<!--
+  * plugins/generic/openAIRE/locale/de_DE/locale.xml
+  *
+  * Copyright (c) 2014-2019 Simon Fraser University
+  * Copyright (c) 2003-2019 John Willinsky
+  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
+  * Localization information: https://pkp.sfu.ca/wiki/index.php?title=Translating_OxS
+  * Localization strings.
+  -->
+
+<locale name="de_DE" full_name="Deutsch (Deutschland)">
+	<message key="plugins.generic.openAIRE.displayName">OpenAIRE</message>
+	<message key="plugins.generic.openAIRE.description">Konformität mit den OpenAIRE Guidelines for Literature Repository Managers v4.</message>
+
+  <message key="plugins.oaiMetadata.openAIRE.displayName">OpenAIRE JATS Metadatenformat</message>
+  <message key="plugins.oaiMetadata.openAIRE.description">Strukturiert Metadaten so, dass sie konform zu den OpenAIRE Guidelines for Literature Repository Managers v4 sind.</message>
+
+  <message key="plugins.generic.openAIRE.resourceType.title">Typ der in diesem Abschnitt veröffentlichten Artikel</message>
+  <message key="plugins.generic.openAIRE.resourceType.description"><![CDATA[Verwendet COAR Resource Type Genres <a target="_new" href="http://vocabularies.coar-repositories.org/documentation/resource_types/2.0.draft/">http://vocabularies.coar-repositories.org/documentation/resource_types/2.0.draft/</a> zur besseren Einhaltung der OpenAIRE Richtlinien]]></message>
+
+</locale>
