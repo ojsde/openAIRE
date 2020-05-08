@@ -15,10 +15,10 @@
 	<message key="plugins.generic.openAIRE.displayName">OpenAIRE</message>
 	<message key="plugins.generic.openAIRE.description">Konformität mit den OpenAIRE Guidelines for Literature Repository Managers v4.</message>
 
-  <message key="plugins.oaiMetadata.openAIRE.displayName">OpenAIRE JATS Metadatenformat</message>
-  <message key="plugins.oaiMetadata.openAIRE.description">Strukturiert Metadaten so, dass sie konform zu den OpenAIRE Guidelines for Literature Repository Managers v4 sind.</message>
+	<message key="plugins.oaiMetadata.openAIRE.displayName">OpenAIRE JATS Metadatenformat</message>
+	<message key="plugins.oaiMetadata.openAIRE.description">Strukturiert Metadaten so, dass sie konform zu den OpenAIRE Guidelines for Literature Repository Managers v4 sind.</message>
 
-  <message key="plugins.generic.openAIRE.resourceType.title">Typ der in diesem Abschnitt veröffentlichten Artikel</message>
-  <message key="plugins.generic.openAIRE.resourceType.description"><![CDATA[Verwendet COAR Resource Type Genres <a target="_new" href="http://vocabularies.coar-repositories.org/documentation/resource_types/2.0.draft/">http://vocabularies.coar-repositories.org/documentation/resource_types/2.0.draft/</a> zur besseren Einhaltung der OpenAIRE Richtlinien]]></message>
+	<message key="plugins.generic.openAIRE.resourceType.title">Typ der in diesem Abschnitt veröffentlichten Artikel</message>
+	<message key="plugins.generic.openAIRE.resourceType.description"><![CDATA[Verwendet COAR Resource Type Genres <a target="_new" href="http://vocabularies.coar-repositories.org/documentation/resource_types/2.0.draft/">http://vocabularies.coar-repositories.org/documentation/resource_types/2.0.draft/</a> zur besseren Einhaltung der OpenAIRE Richtlinien]]></message>
 
 </locale>
