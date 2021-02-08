@@ -4,8 +4,8 @@
 <!--
   * plugins/generic/openAIRE/version.xml
   *
-  * Copyright (c) 2014-2020 Simon Fraser University
-  * Copyright (c) 2003-2020 John Willinsky
+  * Copyright (c) 2014-2021 Simon Fraser University
+  * Copyright (c) 2003-2021 John Willinsky
   * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
   *
   * Plugin version information.
@@ -13,8 +13,8 @@
 <version>
 	<application>openAIRE</application>
 	<type>plugins.generic</type>
-	<release>2.0.2.0</release>
-	<date>2020-02-27</date>
+	<release>2.0.3.0</release>
+	<date>2020-02-08</date>
 	<lazy-load>1</lazy-load>
 	<class>OpenAIREPlugin</class>
 </version>

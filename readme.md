@@ -21,12 +21,16 @@ This plugin is licensed under the GNU General Public License v3. See the file LI
 
 System Requirements
 -------------------
-OJS 3.2.0 or greater.
+OJS 3.3.0 or greater.
 PHP 7.0 or greater.
 
 
 Version History
 ---------------
+
+### Version 2.0.3.0
+
+Support for OJS 3.3.0.
 
 ### Version 2.0.2.0
 
