@@ -99,7 +99,7 @@ class OpenAIREPlugin extends GenericPlugin {
 	 */
 	public function initDataSectionFormFields($hookName, $args) {
 		$sectionForm = $args[0];
-		$request = Application::getRequest();
+		$request = Application::get()->getRequest();
 		$context = $request->getContext();
 		$contextId = $context ? $context->getId() : CONTEXT_ID_NONE;
 		$sectionDao = DAORegistry::getDAO('SectionDAO');
@@ -118,7 +118,7 @@ class OpenAIREPlugin extends GenericPlugin {
 	 */
 	public function readSectionFormFields($hookName, $args) {
 		$sectionForm =& $args[0];
-		$request = Application::getRequest();
+		$request = Application::get()->getRequest();
 		$sectionForm->setData('resourceType', $request->getUserVar('resourceType'));
 	}
 
