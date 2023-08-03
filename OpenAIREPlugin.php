@@ -1,10 +1,10 @@
 <?php
 
 /**
- * @file plugins/generic/openAIRE/OpenAIREPlugin.inc.php
+ * @file plugins/generic/openAIRE/OpenAIREPlugin.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2023 Simon Fraser University
+ * Copyright (c) 2003-2023 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class OpenAIREPlugin
@@ -13,7 +13,14 @@
  * @brief OpenAIRE plugin class
  */
 
-import('lib.pkp.classes.plugins.GenericPlugin');
+namespace APP\plugins\generic\openAIRE;
+
+use APP\core\Application;
+use APP\facades\Repo;
+use PKP\db\DAORegistry;
+use PKP\plugins\GenericPlugin;
+use PKP\plugins\Hook;
+use PKP\plugins\PluginRegistry;
 
 class OpenAIREPlugin extends GenericPlugin {
 	/**
@@ -22,17 +29,15 @@ class OpenAIREPlugin extends GenericPlugin {
 	function register($category, $path, $mainContextId = null) {
 		$success = parent::register($category, $path, $mainContextId);
 		if ($success && $this->getEnabled($mainContextId)) {
-			$this->import('OAIMetadataFormatPlugin_OpenAIRE');
-			PluginRegistry::register('oaiMetadataFormats', new OAIMetadataFormatPlugin_OpenAIRE($this), $this->getPluginPath());
-			$this->import('OpenAIREGatewayPlugin');
-			PluginRegistry::register('gateways', new OpenAIREGatewayPlugin($this), $this->getPluginPath());
+            PluginRegistry::register('oaiMetadataFormats', new OAIMetadataFormatPlugin_OpenAIRE($this), $this->getPluginPath());
+            PluginRegistry::register('gateways', new OpenAIREGatewayPlugin($this), $this->getPluginPath());
 
 			# Handle COAR resource types in section forms
-			HookRegistry::register('sectiondao::getAdditionalFieldNames', array($this, 'addSectionDAOFieldNames'));			
-			HookRegistry::register('Templates::Manager::Sections::SectionForm::AdditionalMetadata', array($this, 'addSectionFormFields'));
-			HookRegistry::register('sectionform::initdata', array($this, 'initDataSectionFormFields'));
-			HookRegistry::register('sectionform::readuservars', array($this, 'readSectionFormFields'));
-			HookRegistry::register('sectionform::execute', array($this, 'executeSectionFormFields'));
+			Hook::add('Schema::get::section', [$this, 'addToSchema']);
+			Hook::add('Templates::Manager::Sections::SectionForm::AdditionalMetadata', array($this, 'addSectionFormFields'));
+			Hook::add('sectionform::initdata', array($this, 'initDataSectionFormFields'));
+			Hook::add('sectionform::readuservars', array($this, 'readSectionFormFields'));
+			Hook::add('sectionform::execute', array($this, 'executeSectionFormFields'));
 
 			$this->_registerTemplateResource();
 		}
@@ -53,19 +58,21 @@ class OpenAIREPlugin extends GenericPlugin {
 		return __('plugins.generic.openAIRE.description');
 	}
 
-	/**
-	 * Add section settings to SectionDAO
-	 *
-	 * @param $hookName string
-	 * @param $args array [
-	 *		@option SectionDAO
-	 *		@option array List of additional fields
-	 * ]
-	 */
-	public function addSectionDAOFieldNames($hookName, $args) {
-		$fields =& $args[1];
-		$fields[] = 'resourceType';
-	}
+    /**
+     * Extend the section entity's schema with an resourceType property
+     */
+    public function addToSchema(string $hookName, array $args)
+    {
+      $schema = $args[0]; /** @var stdClass */
+      $schema->properties->resourceType = (object) [
+          'type' => 'string',
+          'apiSummary' => true,
+          'multilingual' => false,
+          'validation' => ['nullable']
+      ];
+
+      return false;
+    }
 
 	/**
 	 * Add fields to the section editing form
@@ -102,8 +109,7 @@ class OpenAIREPlugin extends GenericPlugin {
 		$request = Application::get()->getRequest();
 		$context = $request->getContext();
 		$contextId = $context ? $context->getId() : CONTEXT_ID_NONE;
-		$sectionDao = DAORegistry::getDAO('SectionDAO');
-		$section = $sectionDao->getById($sectionForm->getSectionId(), $contextId);
+		$section = Repo::section()->get($sectionForm->getSectionId());
 		if ($section) $sectionForm->setData('resourceType', $section->getData('resourceType'));
 	}
 
@@ -133,10 +139,9 @@ class OpenAIREPlugin extends GenericPlugin {
 		$sectionForm = $args[0];
 		$resourceType = $sectionForm->getData('resourceType') ? $sectionForm->getData('resourceType') : '';
 		if (!empty($resourceType)) {
-			$sectionDao = DAORegistry::getDAO('SectionDAO');
-			$section = $sectionDao->getById($sectionForm->getSectionId());			
+			$section = Repo::section()->get($sectionForm->getSectionId());
 			$section->setData('resourceType', $resourceType);
-			$sectionDao->updateObject($section);
+        	Repo::section()->edit($section, []);
 		}
 	}
 
