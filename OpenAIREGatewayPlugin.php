@@ -1,10 +1,10 @@
 <?php
 
 /**
- * @file OpenAIREGatewayPlugin.inc.php
+ * @file OpenAIREGatewayPlugin.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2023 Simon Fraser University
+ * Copyright (c) 2003-2023 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class OpenAIREGateway
@@ -13,7 +13,10 @@
  * @brief OpenAIREGateway plugin
  */
 
-import('lib.pkp.classes.plugins.GatewayPlugin');
+namespace APP\plugins\generic\openAIRE;
+
+use PKP\core\PKPString;
+use PKP\plugins\GatewayPlugin;
 
 class OpenAIREGatewayPlugin extends GatewayPlugin {
 	protected $_parentPlugin;
@@ -69,7 +72,6 @@ class OpenAIREGatewayPlugin extends GatewayPlugin {
 		// Failure.
 		header('HTTP/1.0 404 Not Found');
 		$templateMgr = TemplateManager::getManager($request);
-		AppLocale::requireComponents(LOCALE_COMPONENT_APP_COMMON);
 		$templateMgr->assign('message', 'plugins.generic.openAIRE.gateway.errorMessage');
 		$templateMgr->display('frontend/pages/message.tpl');
 		exit;
