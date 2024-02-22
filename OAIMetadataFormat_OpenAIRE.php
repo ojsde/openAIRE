@@ -57,11 +57,12 @@ class OAIMetadataFormat_OpenAIRE extends OAIMetadataFormat {
 
 		$response = "
 		<article 
-			dtd-version=\"1.1d3\" 
+			dtd-version=\"1.1\" 
 			xmlns:xlink=\"http://www.w3.org/1999/xlink\" 
 			xmlns:mml=\"http://www.w3.org/1998/Math/MathML\" 
 			xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" 
 			xmlns:ali=\"http://www.niso.org/schemas/ali/1.0\" 
+			xmlns=\"https://jats.nlm.nih.gov/publishing/1.1/\" 
 			article-type=\"" . htmlspecialchars($this->_mapCoarResourceTypeToJatsArticleType($resourceType)) . "\" 
 			xml:lang=\"" . substr($articleLocale, 0, 2) . "\">
 		<front>
