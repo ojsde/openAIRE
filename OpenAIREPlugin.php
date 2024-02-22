@@ -109,8 +109,10 @@ class OpenAIREPlugin extends GenericPlugin {
 		$request = Application::get()->getRequest();
 		$context = $request->getContext();
 		$contextId = $context ? $context->getId() : CONTEXT_ID_NONE;
-		$section = Repo::section()->get($sectionForm->getSectionId());
-		if ($section) $sectionForm->setData('resourceType', $section->getData('resourceType'));
+		if ($sectionForm->getSectionId()) {
+			$section = Repo::section()->get($sectionForm->getSectionId());
+			if ($section) $sectionForm->setData('resourceType', $section->getData('resourceType'));
+		}
 	}
 
 	/**
