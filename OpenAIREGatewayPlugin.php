@@ -15,6 +15,8 @@
 
 namespace APP\plugins\generic\openAIRE;
 
+use APP\journal\JournalDAO;
+use PKP\db\DAORegistry;
 use PKP\core\PKPString;
 use PKP\plugins\GatewayPlugin;
 
@@ -62,8 +64,8 @@ class OpenAIREGatewayPlugin extends GatewayPlugin {
 			return false;
 		}
 
-		$scheme = array_shift($args);
-		switch ($scheme) {
+		$type = array_shift($args);
+		switch ($type) {
 			case 'objects':
 				$this->showObjects();
 				break;
@@ -78,9 +80,9 @@ class OpenAIREGatewayPlugin extends GatewayPlugin {
 	}
 
 	function showObjects() {
-		$journalDao = DAORegistry::getDAO('JournalDAO');
-		$issueDao = DAORegistry::getDAO('IssueDAO');
-		$journals = $journalDao->getAll(true);
+        $journalDao = DAORegistry::getDAO('JournalDAO'); /** @var JournalDAO $journalDao */
+        $journals = $journalDao->getAll(true);
+
 		$request = $this->getRequest();
 		$dispatcher = $request->getDispatcher();
 		header('content-type: text/plain');
