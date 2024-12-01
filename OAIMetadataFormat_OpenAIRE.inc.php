@@ -152,7 +152,7 @@ class OAIMetadataFormat_OpenAIRE extends OAIMetadataFormat {
 		$copyrightYear = $article->getCopyrightYear();
 		$copyrightHolder = $article->getLocalizedCopyrightHolder();
 		$licenseUrl = $article->getLicenseURL();
-		$ccBadge = Application::getCCLicenseBadge($licenseUrl);
+		$ccBadge = Application::get()->getCCLicenseBadge($licenseUrl);
 		$openAccessDate = null;
 		if ($accessRights == 'embargoedAccess') {
 			$openAccessDate = date('Y-m-d', strtotime($issue->getOpenAccessDate()));
