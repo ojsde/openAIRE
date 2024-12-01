@@ -1,4 +1,4 @@
-# OpenAIRE Plugin for Open Journal Systems
+# OpenAIRE Plugin 2.0
 
 About
 -----
@@ -21,15 +21,16 @@ This plugin is licensed under the GNU General Public License v3. See the file LI
 
 System Requirements
 -------------------
-OJS 3.4.0 or greater.
+OJS 3.3.0 or greater.
+PHP 7.0 or greater.
 
 
 Version History
 ---------------
 
-### Version 3.4.0.0
+### Version 3.3.0.0
 
-Support for OJS 3.4.0
+Support for OJS 3.3.0., change to more transparent version numbering
 
 ### Version 2.0.3.0
 
@@ -51,8 +52,9 @@ Version 2.0.1 was published in April 2019 and is designed to work with OJS 3.1.2
 Sponsors
 --------
 
-The plugin was created by The Federation of Finnish
-Learned Societies (https://tsv.fi) with funding provided by the Deutsche Forschungsgemeinschaft and Freie Universität Berlin/CeDiS.
+Version 2.0 of the plugin was created by The Federation of Finnish
+Learned Societies (https://tsv.fi) with funding provided by the Deutsche
+Forschungsgemeinschaft and Freie Universität Berlin/CeDiS.
 
 
 Install

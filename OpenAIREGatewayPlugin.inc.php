@@ -1,10 +1,10 @@
 <?php
 
 /**
- * @file OpenAIREGatewayPlugin.php
+ * @file OpenAIREGatewayPlugin.inc.php
  *
- * Copyright (c) 2014-2023 Simon Fraser University
- * Copyright (c) 2003-2023 John Willinsky
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class OpenAIREGateway
@@ -13,12 +13,7 @@
  * @brief OpenAIREGateway plugin
  */
 
-namespace APP\plugins\generic\openAIRE;
-
-use APP\journal\JournalDAO;
-use PKP\db\DAORegistry;
-use PKP\core\PKPString;
-use PKP\plugins\GatewayPlugin;
+import('lib.pkp.classes.plugins.GatewayPlugin');
 
 class OpenAIREGatewayPlugin extends GatewayPlugin {
 	protected $_parentPlugin;
@@ -64,8 +59,8 @@ class OpenAIREGatewayPlugin extends GatewayPlugin {
 			return false;
 		}
 
-		$type = array_shift($args);
-		switch ($type) {
+		$scheme = array_shift($args);
+		switch ($scheme) {
 			case 'objects':
 				$this->showObjects();
 				break;
@@ -74,15 +69,16 @@ class OpenAIREGatewayPlugin extends GatewayPlugin {
 		// Failure.
 		header('HTTP/1.0 404 Not Found');
 		$templateMgr = TemplateManager::getManager($request);
+		AppLocale::requireComponents(LOCALE_COMPONENT_APP_COMMON);
 		$templateMgr->assign('message', 'plugins.generic.openAIRE.gateway.errorMessage');
 		$templateMgr->display('frontend/pages/message.tpl');
 		exit;
 	}
 
 	function showObjects() {
-        $journalDao = DAORegistry::getDAO('JournalDAO'); /** @var JournalDAO $journalDao */
-        $journals = $journalDao->getAll(true);
-
+		$journalDao = DAORegistry::getDAO('JournalDAO');
+		$issueDao = DAORegistry::getDAO('IssueDAO');
+		$journals = $journalDao->getAll(true);
 		$request = $this->getRequest();
 		$dispatcher = $request->getDispatcher();
 		header('content-type: text/plain');

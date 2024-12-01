@@ -1,10 +1,10 @@
 <?php
 
 /**
- * @file OAIMetadataFormatPlugin_OpenAIRE.php
+ * @file OAIMetadataFormatPlugin_OpenAIRE.inc.php
  *
- * Copyright (c) 2014-2023 Simon Fraser University
- * Copyright (c) 2003-2023 John Willinsky
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class OAIMetadataFormatPlugin_OpenAIRE
@@ -13,10 +13,8 @@
  *
  * @brief OAI JATS XML format plugin for OpenAIRE.
  */
-
-namespace APP\plugins\generic\openAIRE;
-
-use PKP\plugins\OAIMetadataFormatPlugin;
+import('lib.pkp.classes.plugins.OAIMetadataFormatPlugin');
+import('plugins.generic.openAIRE.OAIMetadataFormat_OpenAIRE');
 
 class OAIMetadataFormatPlugin_OpenAIRE extends OAIMetadataFormatPlugin {
 	/**
@@ -43,7 +41,7 @@ class OAIMetadataFormatPlugin_OpenAIRE extends OAIMetadataFormatPlugin {
 	}
 
 	function getFormatClass() {
-		return '\APP\plugins\generic\openAIRE\OAIMetadataFormat_OpenAIRE';
+		return 'OAIMetadataFormat_OpenAIRE';
 	}
 
 	static function getMetadataPrefix() {

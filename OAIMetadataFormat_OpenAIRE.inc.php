@@ -8,7 +8,7 @@
  * @file OAIMetadataFormat_OpenAIRE.inc.php
  *
  * Copyright (c) 2013-2020 Simon Fraser University
- * Copyright (c) 2003-2023 John Willinsky
+ * Copyright (c) 2003-2020 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class OAIMetadataFormat_OpenAIRE
@@ -17,16 +17,6 @@
  *
  * @brief OAI metadata format class -- OpenAIRE
  */
-
-namespace APP\plugins\generic\openAIRE;
-
-use APP\core\Application;
-use PKP\core\PKPString;
-use PKP\oai\OAIMetadataFormat;
-use PKP\plugins\PluginRegistry;
-use PKP\plugins\Hook;
-use PKP\db\DAORegistry;
-use PKP\submission\GenreDAO;
 
 class OAIMetadataFormat_OpenAIRE extends OAIMetadataFormat {
 
@@ -57,12 +47,11 @@ class OAIMetadataFormat_OpenAIRE extends OAIMetadataFormat {
 
 		$response = "
 		<article 
-			dtd-version=\"1.1\" 
+			dtd-version=\"1.1d3\" 
 			xmlns:xlink=\"http://www.w3.org/1999/xlink\" 
 			xmlns:mml=\"http://www.w3.org/1998/Math/MathML\" 
 			xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" 
 			xmlns:ali=\"http://www.niso.org/schemas/ali/1.0\" 
-			xmlns=\"https://jats.nlm.nih.gov/publishing/1.1/\" 
 			article-type=\"" . htmlspecialchars($this->_mapCoarResourceTypeToJatsArticleType($resourceType)) . "\" 
 			xml:lang=\"" . substr($articleLocale, 0, 2) . "\">
 		<front>
@@ -107,7 +96,7 @@ class OAIMetadataFormat_OpenAIRE extends OAIMetadataFormat {
 
 		// Authors
 		$affiliations = array();
-		foreach ($article->getCurrentPublication()->getData('authors') as $author) {
+		foreach ($article->getAuthors() as $author) {
 			$affiliation = $author->getLocalizedAffiliation();
 			$affiliationToken = array_search($affiliation, $affiliations);
 			if ($affiliation && !$affiliationToken) {
@@ -153,16 +142,17 @@ class OAIMetadataFormat_OpenAIRE extends OAIMetadataFormat {
 
 		// Fetch funding data from other plugins if available
 		$fundingReferences = null;
-		Hook::call('OAIMetadataFormat_OpenAIRE::findFunders', [&$articleId, &$fundingReferences]);
+		HookRegistry::call('OAIMetadataFormat_OpenAIRE::findFunders', array(&$articleId, &$fundingReferences));
 		if ($fundingReferences){
 			$response .= $fundingReferences;
 		}
 
 		// Copyright, license and other permissions
+		AppLocale::requireComponents(LOCALE_COMPONENT_PKP_SUBMISSION);
 		$copyrightYear = $article->getCopyrightYear();
 		$copyrightHolder = $article->getLocalizedCopyrightHolder();
 		$licenseUrl = $article->getLicenseURL();
-		$ccBadge = Application::get()->getCCLicenseBadge($licenseUrl);
+		$ccBadge = Application::getCCLicenseBadge($licenseUrl);
 		$openAccessDate = null;
 		if ($accessRights == 'embargoedAccess') {
 			$openAccessDate = date('Y-m-d', strtotime($issue->getOpenAccessDate()));
@@ -219,6 +209,7 @@ class OAIMetadataFormat_OpenAIRE extends OAIMetadataFormat {
 		foreach ($submissionKeywordDao->getKeywords($publication->getId(), $journal->getSupportedLocales()) as $locale => $keywords) {
 			if (empty($keywords)) continue;
 			// Load the article.subject locale key in possible other languages
+			AppLocale::requireComponents(LOCALE_COMPONENT_APP_COMMON, $locale);
 			$response .= "\t\t\t<kwd-group xml:lang=\"" . substr($locale, 0, 2) . "\">\n";
 			foreach ($keywords as $keyword) $response .= "\t\t\t\t<kwd>" . htmlspecialchars($keyword) . "</kwd>\n";
 			$response .= "\t\t\t</kwd-group>\n";
