@@ -3,8 +3,8 @@
 /**
  * @file plugins/generic/openAIRE/OpenAIREPlugin.php
  *
- * Copyright (c) 2014-2023 Simon Fraser University
- * Copyright (c) 2003-2023 John Willinsky
+ * Copyright (c) 2014-2026 Simon Fraser University
+ * Copyright (c) 2003-2026 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class OpenAIREPlugin
@@ -184,7 +184,7 @@ class OpenAIREPlugin extends GenericPlugin {
 	 * (Includes default '' => "Choose One" string.)
 	 * @return array resourceTypeUri => resourceTypeLabel
 	 */
-	function _getResourceTypeOptions() {		
+	function _getResourceTypeOptions() {
 		$resourceTypeOptions = $this->_getCoarResourceType(null);
 		$chooseOne = __('common.chooseOne');
 		$chooseOneOption = array('' => $chooseOne);
