@@ -196,8 +196,10 @@ class OAIMetadataFormat_OpenAIRE extends OAIMetadataFormat {
 		// Keywords
 		$subjects = array();
 		if (is_array($article->getSubject(null))) foreach ($article->getSubject(null) as $locale => $subject) {
-			$s = array_map('trim', explode(';', $subject));
-			if (!empty($s)) $subjects[$locale] = $s;
+			if (is_string($subject)) {
+				$s = array_map('trim', explode(';', $subject));
+				if (!empty($s)) $subjects[$locale] = $s;
+			}
 		}
 		if (!empty($subjects)) foreach ($subjects as $locale => $s) {
 			$response .= "\t\t\t<kwd-group xml:lang=\"" . substr($locale, 0, 2) . "\">\n";
