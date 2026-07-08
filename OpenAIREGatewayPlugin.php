@@ -3,8 +3,8 @@
 /**
  * @file OpenAIREGatewayPlugin.php
  *
- * Copyright (c) 2014-2023 Simon Fraser University
- * Copyright (c) 2003-2023 John Willinsky
+ * Copyright (c) 2014-2026 Simon Fraser University
+ * Copyright (c) 2003-2026 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class OpenAIREGateway
@@ -15,14 +15,17 @@
 
 namespace APP\plugins\generic\openAIRE;
 
+use APP\core\Application;
+use APP\journal\Journal;
 use APP\journal\JournalDAO;
+use APP\template\TemplateManager;
 use PKP\db\DAORegistry;
 use PKP\core\PKPString;
 use PKP\plugins\GatewayPlugin;
 
 class OpenAIREGatewayPlugin extends GatewayPlugin {
 	protected $_parentPlugin;
-	
+
 	/**
 	 * Constructor
 	 * @param $parentPlugin OpenAIREPlugin
@@ -50,7 +53,7 @@ class OpenAIREGatewayPlugin extends GatewayPlugin {
 
 	public function getHideManagement() {
 		return true;
-	}	
+	}
 
 	public function getEnabled() {
 		return $this->_parentPlugin->getEnabled();
@@ -88,8 +91,8 @@ class OpenAIREGatewayPlugin extends GatewayPlugin {
 		header('content-type: text/plain');
 		header('content-disposition: attachment; filename=objects-' . date("Y-m-d") . '.txt');
 		while ($journal = $journals->next()) {
-			if ( ($journal->getSetting('onlineIssn') || $journal->getSetting('printIssn') ) && $journal->getEnabled() && $journal->getSetting('publishingMode') != PUBLISHING_MODE_NONE) {
-					$journalData[$journal->getId()]['url'] = $dispatcher->url($request, ROUTE_PAGE, $journal->getPath());
+			if ( ($journal->getSetting('onlineIssn') || $journal->getSetting('printIssn') ) && $journal->getEnabled() && $journal->getSetting('publishingMode') != Journal::PUBLISHING_MODE_NONE) {
+					$journalData[$journal->getId()]['url'] = $dispatcher->url($request, Application::ROUTE_PAGE, $journal->getPath());
 					$journalData[$journal->getId()]['issn'] = $journal->getSetting('printIssn');
 					$journalData[$journal->getId()]['eissn'] = $journal->getSetting('onlineIssn');
 					$journalData[$journal->getId()]['primaryLanguage'] = $journal->getPrimaryLocale();
@@ -97,8 +100,6 @@ class OpenAIREGatewayPlugin extends GatewayPlugin {
 			}
 		}
 		echo json_encode($journalData);
-		exit;	
+		exit;
 	}
 }
-
-?>
